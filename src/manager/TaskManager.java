@@ -104,14 +104,18 @@ public class TaskManager {
         return subtasks.get(id);
     }
 
-    public void createSubtask(Subtask subtask) {
-        int id = generateID();
-        subtask.setId(id);
-        subtasks.put(id, subtask);
+    public boolean createSubtask(Subtask subtask) {
         Epic epic = epics.get(subtask.getEpicID());
         if (epic != null) {
+            int id = generateID();
+            subtask.setId(id);
+            subtasks.put(id, subtask);
             epic.addSubtasksId(subtask.getId());
             updateEpicStatus(epic);
+            return true;
+        } else {
+            System.out.println("Эпик с данным значением не найден. Подзадача не будет создана");
+            return false;
         }
     }
 
@@ -145,32 +149,11 @@ public class TaskManager {
         return result;
     }
 
-
     public Task getTask(String name, String description) {
         int id = generateID();
         Task task = new Task(id, name, description, Status.NEW);
         tasks.put(id, task);
         return task;
-    }
-
-    public Epic createEpicID(String name, String description) {
-        int id = generateID();
-        Epic epic = new Epic(id, name, description);
-        epics.put(id, epic);
-        return epic;
-    }
-
-    public Subtask createSubtaskID(String name, String description, int epicID) {
-        Epic epic = epics.get(epicID);
-        if (epic == null) {
-            System.out.println("Epic " + epicID + " not found");
-            return null;
-        }
-        int id = generateID();
-        Subtask subtask = new Subtask(id, name, description, Status.NEW, epicID);
-        subtasks.put(id, subtask);
-        epic.addSubtasksId(id);
-        return subtask;
     }
 
     private void updateEpicStatus(Epic epic) {
