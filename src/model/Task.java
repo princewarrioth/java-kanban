@@ -1,3 +1,7 @@
+package model;
+
+import status.Status;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +14,12 @@ public class Task {
 
     public Task(int id, String name, String description, Status status) {
         this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
+    public Task(String name, String description, Status status){
         this.name = name;
         this.description = description;
         this.status = status;

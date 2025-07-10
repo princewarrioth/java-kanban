@@ -1,27 +1,33 @@
+import model.Task;
+import model.Epic;
+import model.Subtask;
+import manager.TaskManager;
+import status.Status;
+
 public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = new TaskManager();
 
         // ЗАДАЧИ
-        Task task1 = new Task(manager.generateID(), "Эпик 1", "Описание задачи 1", Status.NEW);
+        Task task1 = new Task( "Эпик 1", "Описание задачи 1", Status.NEW);
         manager.createTask(task1);
 
-        Task task2 = new Task(manager.generateID(), "Эпик 2", "Описание задачи 2", Status.NEW);
+        Task task2 = new Task( "Эпик 2", "Описание задачи 2", Status.NEW);
         manager.createTask(task2);
 
         // ЭПИК 1 И РЕАЛИЗАЦИЯ ПОДЗАДАЧЕЙ
-        Epic epic1 = new Epic(manager.generateID(), "Эпик 1", "Описание эпика 1");
+        Epic epic1 = new Epic( "Эпик 1", "Описание эпика 1");
         manager.createEpic(epic1);
 
-        Subtask subtask1 = new Subtask(manager.generateID(), "Подзадача 1", "Описание подзадачи 1", Status.NEW, epic1.getId());
+        Subtask subtask1 = new Subtask( "Подзадача 1", "Описание подзадачи 1", Status.NEW, epic1.getId());
         manager.createSubtask(subtask1);
 
-        Subtask subtask2 = new Subtask(manager.generateID(), "Подзадача 2", "Описание подзадачи 2", Status.NEW, epic1.getId());
+        Subtask subtask2 = new Subtask( "Подзадача 2", "Описание подзадачи 2", Status.NEW, epic1.getId());
         manager.createSubtask(subtask2);
 
         // ЭПИК 2 И РЕАЛИЗАЦИЯ ПОДЗАДАЧЕЙ
-        Epic epic2 = new Epic(manager.generateID(), "Эпик 2", "Описание эпика 2");
+        Epic epic2 = new Epic( "Эпик 2", "Описание эпика 2");
         manager.createEpic(epic2);
 
         Subtask subtask3 = new Subtask(manager.generateID(), "Подзадача 3", "Описание подзадачи 3", Status.NEW, epic2.getId());
