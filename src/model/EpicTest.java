@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
 
-    private TaskManager taskManager;
+    private static TaskManager taskManager;
 
     @BeforeEach
         void setUp() {
@@ -127,4 +127,26 @@ class EpicTest {
             assertEquals(subtaskId, fetchedSubtask.getId(), "Айди подзадачи должен совпадать");
             assertEquals(epicId, fetchedSubtask.getEpicID(), "Подзадача должна быть привязана к правильному Эпику");
         }
+
+    @Test
+        void shouldAddTasksOfDifferentTypesAndFindById() {
+            Task task = new Task("Таск 1", "Описание 1", Status.NEW);
+            taskManager.createTask(task);
+            int taskId = task.getId();
+
+        // Создание эпика
+            Epic epic = new Epic("Эпик 1", "Описание эпика");
+            taskManager.createEpic(epic);
+            int epicId = epic.getId();
+
+        // Создание подзадачи
+            Subtask subtask = new Subtask("Сабтаск 1", "Описание сабтаска", Status.NEW, epicId);
+            taskManager.createSubtask(subtask);
+            int subtaskId = subtask.getId();
+
+        // Проверка поиска по id
+            assertEquals(task, taskManager.getTask(taskId), "Таск должен быть найден по айди");
+            assertEquals(epic, taskManager.getEpic(epicId), "Эпик должен быть найден по айди");
+            assertEquals(subtask, taskManager.getSubtask(subtaskId), "Сабтаск должен быть найден по айди");
+    }
 }

@@ -88,6 +88,15 @@ public class Main {
 
         System.out.println("После удаления задачи и эпика:");
 
+        manager.getTask(task1.getId());
+        manager.getEpic(epic2.getId());
+        manager.getSubtask(subtask3.getId());
+
+        System.out.println("История изменений ---");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task.getId() + " - " + task.getName() + " - " + task.getStatus());
+        }
+
         System.out.println("Все задачи:");
         for (Task task : manager.getAllTasks()) {
             System.out.println(task.getId() + " - " + task.getName() + " - " + task.getStatus());
@@ -101,31 +110,6 @@ public class Main {
         System.out.println("Все подзадачи:");
         for (Subtask subtask : manager.getAllSubtasks()) {
             System.out.println(subtask.getId() + " - " + subtask.getName() + " - " + subtask.getStatus() + " (Epic ID: " + subtask.getEpicID() + ")");
-        }
-        printAllTasks(manager);
-    }
-
-    private static void printAllTasks(TaskManager manager) {
-        System.out.println("Задачи:");
-        for (Task task : manager.getAllTasks()) {
-            System.out.println(task);
-        }
-        System.out.println("Эпики:");
-        for (Epic epic : manager.getAllEpics()) {
-            System.out.println(epic);
-
-            for (Task task : manager.getSubtasksOfEpic(epic.getId())) {
-                System.out.println("-->" + task);
-            }
-        }
-        System.out.println("Подзадачи:");
-        for (Task subtask : manager.getAllSubtasks()) {
-            System.out.println(subtask);
-        }
-
-        System.out.println("История:");
-        for (Task task : manager.getHistory()) {
-            System.out.println(task);
         }
     }
 }
