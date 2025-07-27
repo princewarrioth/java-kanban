@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static final int LAST_TEN_ACTION = 9; // изменил на 9, нумерация с листа начинается с 0
+    private static final int LAST_TEN_ACTION = 10; //
 
     private List<Task> history = new ArrayList<>();
 

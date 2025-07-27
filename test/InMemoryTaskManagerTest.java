@@ -1,6 +1,6 @@
-package model;
 
 import manager.*;
+import model.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import status.Status;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EpicTest {
+class InMemoryTaskManagerTest {
 
     private static TaskManager taskManager;
 
