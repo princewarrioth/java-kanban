@@ -3,12 +3,9 @@ package manager;
 import model.Task;
 import model.Epic;
 import model.Subtask;
-import status.Status;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public interface TaskManager {
     int generateID();
