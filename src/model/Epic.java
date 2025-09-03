@@ -1,6 +1,7 @@
 package model;
 
 import status.Status;
+import status.Type;
 
 import java.util.ArrayList;
 
@@ -36,5 +37,10 @@ public class Epic extends Task {
 
     public void setSubtasksId(ArrayList<Integer> subtasksId) {
         this.subtasksId = subtasksId;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.EPIC;
     }
 }

@@ -1,6 +1,7 @@
 package model;
 
 import status.Status;
+import status.Type;
 
 public class Task {
     private int id;
@@ -66,5 +67,9 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public Type getType() {
+        return Type.TASK;
     }
 }

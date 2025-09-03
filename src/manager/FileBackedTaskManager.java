@@ -52,11 +52,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             epicID = String.valueOf(((Subtask) task).getEpicID());
         }
 
-        return String.join(",",
-                String.valueOf(task.getId()),
-                type,
+        return String.format("%d,%s,%s,%s,%s,%s",
+                task.getId(),
+                task.getType(),
                 task.getName(),
-                task.getStatus().toString(),
+                task.getStatus(),
                 task.getDescription(),
                 epicID
         );
