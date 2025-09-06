@@ -81,7 +81,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
-
+        int maxId = 0;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
             while ((line = reader.readLine()) != null) {
@@ -89,6 +89,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     continue;
                 }
                 Task task = fromString(line);
+                maxId = Math.max(maxId, task.getId());
                 switch (task.getType()) {
                     case TASK:
                         manager.tasks.put(task.getId(), task);
@@ -109,6 +110,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке" + file.getName(), e);
         }
+        manager.id = maxId + 1;
         return manager;
     }
 
