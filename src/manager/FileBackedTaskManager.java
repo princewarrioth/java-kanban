@@ -1,5 +1,6 @@
 package manager;
 
+import exception.ManagerSaveException;
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -7,6 +8,8 @@ import status.Status;
 import status.Type;
 
 import java.io.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -37,9 +40,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private String toString(Task task) {
-        String epicID = "";
+        String epicId = "";
+        String subtasksField = "";
+
         if (task instanceof Subtask) {
-            epicID = String.valueOf(((Subtask) task).getEpicID());
+            epicId = String.valueOf(((Subtask) task).getEpicID());
+        } else if (task instanceof Epic) {
+            List<Integer> ids = ((Epic) task).getSubtaskId();
+            if (!ids.isEmpty()) {
+                subtasksField = ids.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(";"));
+            }
         }
 
         return String.format("%d,%s,%s,%s,%s,%s",
@@ -48,7 +60,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 task.getName(),
                 task.getStatus().name(),
                 task.getDescription(),
-                epicID
+                epicId
         );
     }
 
@@ -59,6 +71,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = fields[2];
         Status status = Status.valueOf(fields[3]);
         String description = fields[4];
+        String epicField = fields.length > 5 ? fields[5] : "";
+        String subtasksField = fields.length > 6 ? fields[6] : "";
 
         switch (type) {
             case TASK:
@@ -68,7 +82,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             case EPIC:
                 Epic epic = new Epic(name, description);
                 epic.setId(id);
-                return epic;
+                if (!subtasksField.isBlank()) {
+                    for (String s : subtasksField.split(";")) {
+                        epic.addSubtasksId(Integer.parseInt(s));
+                    }
+                }
             case SUBTASK:
                 int epicId = Integer.parseInt(fields[5]);
                 Subtask subtask = new Subtask(name, description, status, epicId);
@@ -142,14 +160,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void deleteTaskByiD(int id) {
-        super.deleteTaskByiD(id);
+    public void deleteTaskById(int id) {
+        super.deleteTaskById(id);
         save();
     }
 
     @Override
     public void deleteSubtaskById(int id) {
-        super.deleteTaskByiD(id);
+        super.deleteTaskById(id);
         save();
     }
 

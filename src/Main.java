@@ -83,7 +83,7 @@ public class Main {
             System.out.println(subtask.getId() + " - " + subtask.getName() + " - " + subtask.getStatus() + " (Epic ID: " + subtask.getEpicID() + ")");
         }
 
-        manager.deleteTaskByiD(task2.getId());
+        manager.deleteTaskById(task2.getId());
         manager.deleteEpicById(epic1.getId());
 
         System.out.println("После удаления задачи и эпика:");

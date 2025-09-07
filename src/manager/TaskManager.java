@@ -22,7 +22,7 @@ public interface TaskManager {
 
     void updateTask(Task task);
 
-    void deleteTaskByiD(int id);
+    void deleteTaskById(int id);
 
 
 // METHOD EPIC

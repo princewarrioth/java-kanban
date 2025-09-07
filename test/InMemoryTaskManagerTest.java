@@ -18,14 +18,12 @@ class InMemoryTaskManagerTest {
     private static TaskManager taskManager;
     private HistoryManager historyManager;
     private Task task1, task2, task3;
-    private FileBackedTaskManager manager;
+
 
     @BeforeEach
         void setUp() {
             taskManager = new InMemoryTaskManager(new InMemoryHistoryManager());
             historyManager = new InMemoryHistoryManager();
-            testFile = tempDir.resolve("test.csv").toFile();
-            manager = new FileBackedTaskManager(testFile);
 
             task1 = new Task(1, "Задача 1", "Описание", Status.NEW);
             task2 = new Task(2, "Задача 2", "Описание", Status.NEW);
@@ -189,13 +187,4 @@ class InMemoryTaskManagerTest {
             assertFalse(history.contains(task2));
     }
 
-    @Test
-        void testDeleteSubtaskIncorrectCall() {
-            Epic epic = new Epic("Epic", "Description");
-            manager.createEpic(epic);
-            Subtask subtask = new Subtask("Subtask", "Description", Status.NEW, epic.getId());
-            manager.createSubtask(subtask);
-            manager.deleteSubtaskById(subtask.getId());
-            assertNotNull(manager.getSubtask(subtask.getId())); // Подзадача не удалена
-    }
 }
