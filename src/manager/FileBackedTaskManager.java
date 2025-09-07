@@ -60,12 +60,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 task.getName(),
                 task.getStatus().name(),
                 task.getDescription(),
-                epicId
+                epicId,
+                subtasksField
         );
     }
 
     private static Task fromString(String line) {
-        String[] fields = line.split(",");
+        String[] fields = line.split(",", -1);
         int id = Integer.parseInt(fields[0]);
         Type type = Type.valueOf(fields[1]);
         String name = fields[2];
@@ -84,11 +85,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 epic.setId(id);
                 if (!subtasksField.isBlank()) {
                     for (String s : subtasksField.split(";")) {
-                        epic.addSubtasksId(Integer.parseInt(s));
+                        epic.addSubtasksId(Integer.parseInt(s.trim()));
                     }
                 }
+                return epic;
             case SUBTASK:
-                int epicId = Integer.parseInt(fields[5]);
+                if (epicField.isBlank()) {
+                    throw new IllegalStateException("У сабтаска нет epicId в файле: " + line);
+                }
+                int epicId = Integer.parseInt(epicField.trim());
                 Subtask subtask = new Subtask(name, description, status, epicId);
                 subtask.setId(id);
                 return subtask;
@@ -125,6 +130,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         break;
                 }
             }
+
+            for (Epic epic : manager.getAllEpics()) {
+                manager.updateEpicStatus(epic);
+            }
+
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке" + file.getName(), e);
         }
