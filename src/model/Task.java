@@ -1,10 +1,7 @@
 package model;
 
 import status.Status;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import status.Type;
 
 public class Task {
     private int id;
@@ -19,7 +16,7 @@ public class Task {
         this.status = status;
     }
 
-    public Task(String name, String description, Status status){
+    public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -70,5 +67,9 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public Type getType() {
+        return Type.TASK;
     }
 }

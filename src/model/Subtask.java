@@ -1,6 +1,7 @@
 package model;
 
 import status.Status;
+import status.Type;
 
 public class Subtask extends Task {
     private int epicID;
@@ -17,5 +18,10 @@ public class Subtask extends Task {
 
     public int getEpicID() {
         return epicID;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.SUBTASK;
     }
 }
