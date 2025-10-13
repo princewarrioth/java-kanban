@@ -1,6 +1,6 @@
 package status;
 
-public enum Type{
+public enum Type {
     TASK,
     EPIC,
     SUBTASK
