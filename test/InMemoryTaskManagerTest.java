@@ -3,20 +3,43 @@ import manager.*;
 import model.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.io.TempDir;
 import status.Status;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
+class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     private static TaskManager taskManager;
+    private HistoryManager historyManager;
+    private Task task1, task2, task3;
 
+    @Override
     @BeforeEach
-        void setUp() {
-            taskManager = new InMemoryTaskManager(new InMemoryHistoryManager());
-        }
+    public void setUp() {
+        manager = createManager();
+        taskManager = new InMemoryTaskManager(new InMemoryHistoryManager());
+        historyManager = new InMemoryHistoryManager();
+
+        task1 = new Task(1, "Задача 1", "Описание", Status.NEW, Duration.ZERO, null);
+        task2 = new Task(2, "Задача 2", "Описание", Status.NEW, Duration.ZERO, null);
+        task3 = new Task(3, "Задача 3", "Описание", Status.NEW, Duration.ZERO, null);
+    }
+
+    @TempDir
+        Path tempDir;
+        private File testFile;
+
+    @Override
+    protected InMemoryTaskManager createManager() {
+        return new InMemoryTaskManager(new InMemoryHistoryManager());
+    }
 
     // Проверка на то, что нельзя эпик добавить себя в виде подзадачи
     @Test
@@ -148,5 +171,26 @@ class InMemoryTaskManagerTest {
             assertEquals(task, taskManager.getTask(taskId), "Таск должен быть найден по айди");
             assertEquals(epic, taskManager.getEpic(epicId), "Эпик должен быть найден по айди");
             assertEquals(subtask, taskManager.getSubtask(subtaskId), "Сабтаск должен быть найден по айди");
+    }
+
+    @Test
+        void shouldAddTasksToHistory() {
+            historyManager.addToHistory(task1);
+            historyManager.addToHistory(task2);
+            List<Task> history = historyManager.getHistory();
+            assertEquals(2, history.size());
+            assertEquals(task1, history.get(0));
+            assertEquals(task2, history.get(1));
+    }
+
+    @Test
+        void shouldRemoveTaskFromHistory() {
+            historyManager.addToHistory(task1);
+            historyManager.addToHistory(task2);
+            historyManager.addToHistory(task3);
+            historyManager.remove(2);
+            List<Task> history = historyManager.getHistory();
+            assertEquals(2, history.size());
+            assertFalse(history.contains(task2));
     }
 }
