@@ -1,4 +1,4 @@
-import manager.HistoryManager;
+
 import manager.Managers;
 import model.Task;
 import model.Epic;
@@ -6,110 +6,73 @@ import model.Subtask;
 import manager.TaskManager;
 import status.Status;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
-        HistoryManager historyManager = Managers.getDefaultHistory();
 
         // ЗАДАЧИ
-        Task task1 = new Task( "Эпик 1", "Описание задачи 1", Status.NEW);
+        Task task1 = new Task("Задача 1", "Описание задачи 1", Status.NEW);
+        task1.setStartTime(LocalDateTime.of(2025, 10, 13, 9, 0));
+        task1.setDuration(Duration.ofMinutes(60));
         manager.createTask(task1);
 
-        Task task2 = new Task( "Эпик 2", "Описание задачи 2", Status.NEW);
+        Task task2 = new Task("Задача 2", "Описание задачи 2", Status.NEW);
+        task2.setStartTime(LocalDateTime.of(2025, 10, 13, 11, 0));
+        task2.setDuration(Duration.ofMinutes(30));
         manager.createTask(task2);
 
-        // ЭПИК 1 И РЕАЛИЗАЦИЯ ПОДЗАДАЧЕЙ
-        Epic epic1 = new Epic( "Эпик 1", "Описание эпика 1");
+        // ЭПИК 1
+        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1");
         manager.createEpic(epic1);
 
-        Subtask subtask1 = new Subtask( "Подзадача 1", "Описание подзадачи 1", Status.NEW, epic1.getId());
+        Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", Status.NEW, epic1.getId());
+        subtask1.setStartTime(LocalDateTime.of(2025, 10, 13, 12, 0));
+        subtask1.setDuration(Duration.ofMinutes(45));
         manager.createSubtask(subtask1);
 
-        Subtask subtask2 = new Subtask( "Подзадача 2", "Описание подзадачи 2", Status.NEW, epic1.getId());
+        Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", Status.NEW, epic1.getId());
+        subtask2.setStartTime(LocalDateTime.of(2025, 10, 13, 13, 0));
+        subtask2.setDuration(Duration.ofMinutes(30));
         manager.createSubtask(subtask2);
 
-        // ЭПИК 2 И РЕАЛИЗАЦИЯ ПОДЗАДАЧЕЙ
-        Epic epic2 = new Epic( "Эпик 2", "Описание эпика 2");
+        // ЭПИК 2
+        Epic epic2 = new Epic("Эпик 2", "Описание эпика 2");
         manager.createEpic(epic2);
 
-        Subtask subtask3 = new Subtask(manager.generateID(), "Подзадача 3", "Описание подзадачи 3", Status.NEW, epic2.getId());
+        Subtask subtask3 = new Subtask("Подзадача 3", "Описание подзадачи 3", Status.NEW, epic2.getId());
+        subtask3.setStartTime(LocalDateTime.of(2025, 10, 13, 10, 0));
+        subtask3.setDuration(Duration.ofMinutes(50));
         manager.createSubtask(subtask3);
 
-        // РАСПЕЧАТЫВАНИЕ ВСЕХ ЗАДАЧЕЙ
+        // Вывод всех задач
         System.out.println("Все задачи:");
-        for (Task task : manager.getAllTasks()) {
-            System.out.println(task.getId() + " - " + task.getName() + " - " + task.getStatus());
+        for (Task t : manager.getAllTasks()) {
+            System.out.println(t.getId() + " - " + t.getName() + " - " + t.getStatus()
+                    + " (Start: " + t.getStartTime() + ", Duration: " + t.getDuration().toMinutes() + "мин)");
         }
 
         System.out.println("Все эпики:");
-        for (Epic epic : manager.getAllEpics()) {
-            System.out.println(epic.getId() + " - " + epic.getName() + " - " + epic.getStatus());
+        for (Epic e : manager.getAllEpics()) {
+            System.out.println(e.getId() + " - " + e.getName() + " - " + e.getStatus()
+                    + " (Start: " + e.getStartTime() + ", End: " + e.getEndTime() + ")");
         }
 
         System.out.println("Все подзадачи:");
-        for (Subtask subtask : manager.getAllSubtasks()) {
-            System.out.println(subtask.getId() + " - " + subtask.getName() + " - " + subtask.getStatus() + " (Epic ID: " + subtask.getEpicID() + ")");
+        for (Subtask s : manager.getAllSubtasks()) {
+            System.out.println(s.getId() + " - " + s.getName() + " - " + s.getStatus()
+                    + " (Epic ID: " + s.getEpicID() + ", Start: " + s.getStartTime()
+                    + ", Duration: " + s.getDuration().toMinutes() + "мин)");
         }
 
-        // УСТАНОВКА СТАТУСА
-        task1.setStatus(Status.IN_PROGRESS);
-        manager.updateTask(task1);
-
-        subtask1.setStatus(Status.DONE);
-        manager.updateSubtask(subtask1);
-
-        subtask2.setStatus(Status.IN_PROGRESS);
-        manager.updateSubtask(subtask2);
-
-        subtask3.setStatus(Status.DONE);
-        manager.updateSubtask(subtask3);
-
-        // ПОСЛЕ ИЗМЕНЕНИЯ СТАТУСА
-        System.out.println("После изменения статусов:");
-
-        System.out.println("Все задачи:");
-        for (Task task : manager.getAllTasks()) {
-            System.out.println(task.getId() + " - " + task.getName() + " - " + task.getStatus());
-        }
-
-        System.out.println("Все эпики:");
-        for (Epic epic : manager.getAllEpics()) {
-            System.out.println(epic.getId() + " - " + epic.getName() + " - " + epic.getStatus());
-        }
-
-        System.out.println("Все подзадачи:");
-        for (Subtask subtask : manager.getAllSubtasks()) {
-            System.out.println(subtask.getId() + " - " + subtask.getName() + " - " + subtask.getStatus() + " (Epic ID: " + subtask.getEpicID() + ")");
-        }
-
-        manager.deleteTaskByiD(task2.getId());
-        manager.deleteEpicById(epic1.getId());
-
-        System.out.println("После удаления задачи и эпика:");
-
-        manager.getTask(task1.getId());
-        manager.getEpic(epic2.getId());
-        manager.getSubtask(subtask3.getId());
-
-        System.out.println("История изменений ---");
-        for (Task task : manager.getHistory()) {
-            System.out.println(task.getId() + " - " + task.getName() + " - " + task.getStatus());
-        }
-
-        System.out.println("Все задачи:");
-        for (Task task : manager.getAllTasks()) {
-            System.out.println(task.getId() + " - " + task.getName() + " - " + task.getStatus());
-        }
-
-        System.out.println("Все эпики:");
-        for (Epic epic : manager.getAllEpics()) {
-            System.out.println(epic.getId() + " - " + epic.getName() + " - " + epic.getStatus());
-        }
-
-        System.out.println("Все подзадачи:");
-        for (Subtask subtask : manager.getAllSubtasks()) {
-            System.out.println(subtask.getId() + " - " + subtask.getName() + " - " + subtask.getStatus() + " (Epic ID: " + subtask.getEpicID() + ")");
+        // Вывод задач по приоритету
+        System.out.println("\nЗадачи по приоритету:");
+        for (Task t : manager.getPrioritizedTasks()) {
+            System.out.println(t.getName() + " — начало: " + t.getStartTime()
+                    + ", конец: " + t.getEndTime());
         }
     }
 }

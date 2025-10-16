@@ -1,40 +1,67 @@
 package model;
 
 import status.Status;
+import status.Type;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Task {
-    private int id;
-    private String name;
-    private String description;
-    private Status status;
+    protected int id;
+    protected String name;
+    protected String description;
+    protected Status status;
+    protected Type type;
 
-    public Task(int id, String name, String description, Status status) {
+    protected Duration duration;
+    protected LocalDateTime startTime;
+
+    public Task(String name, String description, Status status) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.type = Type.TASK;
+    }
+
+    public Task(int id, String name, String description, Status status, Duration duration, LocalDateTime startTime) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
-    }
-
-    public Task(String name, String description, Status status){
-        this.name = name;
-        this.description = description;
-        this.status = status;
-    }
-
-    public int getId() {
-        return id;
+        this.duration = duration;
+        this.startTime = startTime;
+        this.type = Type.TASK;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public LocalDateTime getEndTime() {
+        if (startTime == null || duration == null) {
+            return null;
+        }
+        return startTime.plus(duration);
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Status getStatus() {
@@ -43,6 +70,10 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
@@ -64,11 +95,12 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
+        String start = startTime != null ? startTime.toString() : "";
+        long minutes = duration != null ? duration.toMinutes() : 0;
+        return id + "," + type + "," + name + "," + status + "," + description + "," + start + "," + minutes;
+    }
+
+    public Type getType() {
+        return Type.TASK;
     }
 }
